@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import store from 'store';
+
+import './App.scss';
 import CustomNavbar from './components/custom-navbar';
 import Products from './components/products'
 import Cart from './components/cart'
-
-import './App.scss';
 import categories from './mock-data/categories'
 import products from './mock-data/products'
 
@@ -12,6 +13,13 @@ class App extends Component {
     selectedId: null,
     cartItems: {},
     cartCleaned: false,
+  }
+
+  componentDidMount = () => {
+    const cartItems = store.get('cartItems') ? store.get('cartItems') : {}
+    this.setState({
+      cartItems,
+    })
   }
 
   selectId = ( id ) => {
@@ -38,17 +46,23 @@ class App extends Component {
         quantity: savedCartItem[0] ? savedCartItem[0].quantity + 1 : 1
       },
     }
+    store.set('cartItems', cartItems)
     this.setState({
       cartItems,
     })
   }
 
   removeCartItem = (id) => {
-    console.log( 'App.js > removeCartItem > id', id )
+    const cartItems = store.get('cartItems')
+    delete cartItems[id]
+    store.set('cartItems', cartItems)
+    this.setState({
+      cartItems,
+    })
   }
 
   cleanCart = () => {
-    console.log('cleanCart')
+    store.clearAll()
     this.setState({
       cartItems: {},
       cartCleaned: true,
@@ -63,6 +77,7 @@ class App extends Component {
         quantity: event.target.value,
       }
     }
+    store.set('cartItems', cartItems)
     this.setState({
       cartItems
     })
