@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomNavbar from './components/custom-navbar';
 import Products from './components/products'
+import Cart from './components/cart'
 
 import './App.scss';
 import categories from './mock-data/categories'
@@ -10,6 +11,7 @@ class App extends Component {
   state = {
     selectedId: null,
     cartItems: {},
+    cartCleaned: false,
   }
 
   selectId = ( id ) => {
@@ -41,8 +43,33 @@ class App extends Component {
     })
   }
 
+  removeCartItem = (id) => {
+    console.log( 'App.js > removeCartItem > id', id )
+  }
+
+  cleanCart = () => {
+    console.log('cleanCart')
+    this.setState({
+      cartItems: {},
+      cartCleaned: true,
+    })
+  }
+
+  onChangeText = id => event => {
+    const cartItems = {
+      ...this.state.cartItems,
+      [id]: {
+        ...this.state.cartItems[id],
+        quantity: event.target.value,
+      }
+    }
+    this.setState({
+      cartItems
+    })
+  }
+
   render() {
-    const { cartItems } = this.state
+    const { cartItems, cartCleaned } = this.state;
     const { categories: categoriesData } = categories
     const { products: productsData } = products
     console.log( 'App.js > render > cartItems', cartItems );
@@ -51,6 +78,18 @@ class App extends Component {
       <div className="App debug-box">
         <CustomNavbar selectId={this.selectId} categories={categoriesData} />
         <Products addToCart={this.addToCart} data={this.filterProductById(productsData)}/>
+        {
+          Object.values(cartItems).length > 0
+            && (
+              <Cart
+                data={Object.values(cartItems)}
+                removeCartItem={this.removeCartItem}
+                onChangeText={this.onChangeText}
+                cleanCart={this.cleanCart}
+                cartCleaned={cartCleaned}
+              />
+            )
+        }
       </div>
     )
   }
