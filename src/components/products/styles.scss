@@ -1,0 +1,16 @@
+.Products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ControlBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.Card {
+  width: 300px;
+}
